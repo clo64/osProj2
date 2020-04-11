@@ -1,0 +1,5 @@
+Hi I'm Pthread 186105856 and I found the hidden key in position arr[&d] 250
+Hi I'm Pthread 186105856 and I found the hidden key in position arr[&d] 500
+Hi I'm Pthread 186105856 and I found the hidden key in position arr[&d] 750
+Max = 999
+Time Elapsed = 0.002069

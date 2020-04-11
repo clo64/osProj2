@@ -1,0 +1,20 @@
+Hi I'm Pthread 205570048 and I found the hidden key in position arr[&d] 500000
+Hi I'm Pthread 206106624 and I found the hidden key in position arr[&d] 250000
+Hi I'm Pthread 205570048 and I found the hidden key in position arr[&d] 750000
+Max = 999999
+Time Elapsed = 0.287120
+Hi I'm Pthread 130039808 and I found the hidden key in position arr[&d] 500000
+Hi I'm Pthread 127893504 and I found the hidden key in position arr[&d] 250000
+Hi I'm Pthread 128966656 and I found the hidden key in position arr[&d] 750000
+Max = 999999
+Time Elapsed = 0.298276
+Hi I'm Pthread 240934912 and I found the hidden key in position arr[&d] 250000
+Hi I'm Pthread 242544640 and I found the hidden key in position arr[&d] 750000
+Hi I'm Pthread 243081216 and I found the hidden key in position arr[&d] 500000
+Max = 999999
+Time Elapsed = 0.282219
+Hi I'm Pthread 118870016 and I found the hidden key in position arr[&d] 250000
+Hi I'm Pthread 125845504 and I found the hidden key in position arr[&d] 500000
+Hi I'm Pthread 131747840 and I found the hidden key in position arr[&d] 750000
+Max = 999999
+Time Elapsed = 0.273665

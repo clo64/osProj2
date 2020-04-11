@@ -1,0 +1,20 @@
+Max = 999
+Time Elapsed = 0.001436
+Hi I'm process 93794 and I found the hidden key in position arr[&d] 250
+Hi I'm process 93797 and I found the hidden key in position arr[&d] 750
+Hi I'm process 93792 and I found the hidden key in position arr[&d] 500
+Max = 9999
+Time Elapsed = 0.004030
+Hi I'm process 93833 and I found the hidden key in position arr[&d] 7500
+Hi I'm process 93834 and I found the hidden key in position arr[&d] 2500
+Hi I'm process 93835 and I found the hidden key in position arr[&d] 5000
+Max = 99999
+Time Elapsed = 0.029709
+Hi I'm process 93873 and I found the hidden key in position arr[&d] 75000
+Hi I'm process 93867 and I found the hidden key in position arr[&d] 50000
+Hi I'm process 93869 and I found the hidden key in position arr[&d] 25000
+Max = 999999
+Time Elapsed = 0.293984
+Hi I'm process 93894 and I found the hidden key in position arr[&d] 250000
+Hi I'm process 93898 and I found the hidden key in position arr[&d] 500000
+Hi I'm process 93891 and I found the hidden key in position arr[&d] 750000
