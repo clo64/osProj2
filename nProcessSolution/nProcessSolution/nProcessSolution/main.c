@@ -13,14 +13,19 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-#define INTME 1000000                              //Set the number of intergers here, plz
+#define INTME 1000                                 //Set the number of intergers here, plz
 #define OUTPUTFILENAME "projProbTwoOutput.txt"     //Set the projects output file name here
-#define NUMCHILDREN 8                              //Set desired number of children
+#define NUMCHILDREN 4                              //Set desired number of children
 
 //global variable for left-most value of array
 int leftMost = 0;
 int rightMost = 0;
 int flag = 1;      //Flag int for signaling children
+
+//Since pthread_t is not a system portable method of getting and printing
+//thread IDs, we will use this counter to establish system agnostic
+//IDs for our threads.
+int globalThreadCount = 1;
 
 //globally defined struct
 struct partitionVal{
@@ -252,11 +257,7 @@ int main(int argc, const char * argv[]) {
     }
     
     
-    /*
-     Here we want to segregate our first parent from everything else
-     and make it our control function. It will be responsible for communicating
-     the array partition to the children.
-     */
+   
     /*
      The parent enters this first section and becomes the controller.
      It writes its PID, then partitions the array into sections based on the number

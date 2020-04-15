@@ -59,7 +59,7 @@ void partition(struct partitionVal *part);
 void findMax(struct partitionVal *);
 int  findMaxOfMax(void);
 void findKeyValues(struct partitionVal *);
-void writeKey(struct partitionVal *, i);
+void writeKey(struct partitionVal *, int i);
 void writeMax(int max, double time);
 
 /*
@@ -80,7 +80,7 @@ void writeMax(int max, double time){
  Utility function to write the pid and location of
  the key values
  */
-void writeKey(struct partitionVal *threadDataWrite, i){
+void writeKey(struct partitionVal *threadDataWrite, int i){
     FILE *idWrite = fopen(OUTPUTFILENAME, "a");
     if(idWrite == NULL){
         printf("Error opening file");

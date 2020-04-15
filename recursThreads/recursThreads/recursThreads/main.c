@@ -33,6 +33,11 @@
 int leftMost = 0;
 int rightMost = 0;
 
+//Since pthread_t is not a system portable method of getting and printing
+//thread IDs, we will use this counter to establish system agnostic
+//IDs for our threads.
+int globalThreadCount = 1;
+
 /*
  Struct to store all necessary data passed to, or
  required from a thread.
@@ -42,7 +47,7 @@ struct partitionVal{
     int right;
     int *arrToPass;
     int threadMax;
-    pthread_t threadID;
+    int threadID;
     int keySpot;
 };
 
@@ -59,9 +64,8 @@ void partition(struct partitionVal *part);
 void findMax(struct partitionVal *);
 int  findMaxOfMax(void);
 void findKeyValues(struct partitionVal *);
-void writeKey(struct partitionVal *, i);
+void writeKey(struct partitionVal *, int i);
 void writeMax(int max, double time);
-
 /*
  Appends the maximum value to the output file.
  */
@@ -75,12 +79,11 @@ void writeMax(int max, double time){
     }
     fclose(idWrite);
 }
-
 /*
  Utility function to write the pid and location of
  the key values
  */
-void writeKey(struct partitionVal *threadDataWrite, i){
+void writeKey(struct partitionVal *threadDataWrite, int i){
     FILE *idWrite = fopen(OUTPUTFILENAME, "a");
     if(idWrite == NULL){
         printf("Error opening file");
@@ -89,7 +92,6 @@ void writeKey(struct partitionVal *threadDataWrite, i){
     }
     fclose(idWrite);
 }
-
 /*
  This function finds the key values, then writes
  to the pid's and location to the output file
@@ -102,7 +104,6 @@ void findKeyValues(struct partitionVal *threadData){
         }
     }
 }
-
 /*
  This function finds the maximum value in an array
  within the bounds passed as arguments.
@@ -115,7 +116,6 @@ void findMax(struct partitionVal *maxData){
     }
     maxData->threadMax=temp;
 }
-
 /*
  The parent will run this function N children
  number of times to get the array partition
@@ -130,7 +130,6 @@ void partition(struct partitionVal *part){
     //update the global value of leftMost to reflect this partition
     leftMost = rightMost+1;
 }
-
 /*
 Create our list of non-repeating integers from 0 to INTME-1
 To change the number of integers created, edit the INTME define above
@@ -149,7 +148,6 @@ void createIntFile(int howMany){
     fclose(fptr);
     return;
 }
-
 /*
 Loads the integers back into an array in the program.
 Note that we allocate the array in the main function, then
@@ -174,7 +172,6 @@ int* readIntFile(int howMany, int arr[]){
     fclose(fptr);
     return arr;
 }
-
 /*
 This shuffles the array after we read it back into
 our array. This was written with reference from geeksforgeeks.com
@@ -186,7 +183,6 @@ void shuffleArray(int arr[]){
         swap(&arr[i], &arr[j]);
     }
 }
-
 /*
 This is a simple swap utility function,
 it's primarily used for the array shuffle function.
@@ -196,7 +192,6 @@ void swap(int *a, int *b){
     *a = *b;
     *b = temp;
 }
-
 /*
 This function places our key values as requested
 by the project brief. Since the continuity of values in the
@@ -210,22 +205,20 @@ void placeKeyValues(int arr[]){
     arr[INTME/2] = -50;
     arr[(INTME/4)*3] = -50;
 }
-
 /*
  This is the function passed to each new thread. Here, we obtain the thread's ID,
  then we get the array partition this thread should work on, after that we get the Max
- from the array within our thread's bound, finally we see if the key value is within out
+ from the array within our thread's bound, finally we see if the key value is within our
  bounds
  */
 void *threadShred(void* arg){
     struct partitionVal *sentData = (struct partitionVal*)arg;
-    sentData->threadID = pthread_self();
+    sentData->threadID = globalThreadCount++;
     partition(sentData);
     findMax(sentData);
     findKeyValues(sentData);
     return 0;
 }
-
 /*
  This function does the actual recursive creation of threads. The number of
  recursive calls is relative to the the size of "chunks" of data that the user
@@ -256,7 +249,6 @@ int findMaxOfMax(void){
     }
     return maxTemp;
 }
-
 
 int main(int argc, const char * argv[]) {
     

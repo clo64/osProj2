@@ -21,7 +21,6 @@
  | completely reinvent the use and manipulation of data structures to account
  | for the shared memory space.
 */
- 
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h>
@@ -30,13 +29,18 @@
 #include <sys/types.h>
 #include <pthread.h>
 
-#define INTME 1000000                          //Set the number of intergers here, plz
+#define INTME 10000                          //Set the number of intergers here, plz
 #define OUTPUTFILENAME "proj2Prob1.txt"       //Set the projects output file name here
-#define NUMTHREADS 20
+#define NUMTHREADS 4
 
 //global variable for left-most value of array
 int leftMost = 0;
 int rightMost = 0;
+
+//Since pthread_t is not a system portable method of getting and printing
+//thread IDs, we will use this counter to establish system agnostic
+//IDs for our threads.
+int globalThreadCount = 1;
 
 /*
  Struct to store all necessary data passed to, or
@@ -59,7 +63,7 @@ void placeKeyValues(int arr[]);
 void swap(int *a, int *b);
 void writeMyID(void);
 void writeMax(int max, double time);
-void writeKey(struct partitionVal *, i);
+void writeKey(struct partitionVal *, int i);
 void partition(struct partitionVal *part);
 int* readIntFile(int howMany, int arr[]);
 void findMax(struct partitionVal *);
@@ -67,9 +71,8 @@ void findKeyValues(struct partitionVal *);
 int compare(int a, int b);
 
 /*
- The parent will run this function N children
- number of times to get the array partition
- values.
+ Each thread will run this partition function to get
+ its "slice" of the problem.
  */
 void partition(struct partitionVal *part){
     //calculate the current rightmost value based on current leftmost
@@ -81,15 +84,15 @@ void partition(struct partitionVal *part){
     leftMost = rightMost+1;
 }
 /*
- Utility function to write the pid and location of
+ Utility function to write the tid and location of
  the key values
  */
-void writeKey(struct partitionVal *threadDataWrite, i){
+void writeKey(struct partitionVal *threadDataWrite, int i){
     FILE *idWrite = fopen(OUTPUTFILENAME, "a");
     if(idWrite == NULL){
         printf("Error opening file");
     }else{
-        fprintf(idWrite, "Hi I'm Pthread %d and I found the hidden key in position arr[&d] %d\n", threadDataWrite->threadID, i);
+        fprintf(idWrite, "Hi I'm Pthread %d and I found the hidden key in position arr[%d]\n", threadDataWrite->threadID, i);
     }
     fclose(idWrite);
 }
@@ -126,7 +129,6 @@ void writeMax(int max, double time){
 int compare(int a, int b){
     return (a > b) ? a : b;
 }
-
 /*
  This function finds the maximum value in an array
  within the bounds passed as arguments.
@@ -141,7 +143,7 @@ void findMax(struct partitionVal *threadData){
 }
 /*
  This function finds the key values, then writes
- to the pid's and location to the output file
+ to the tid's and location to the output file
  */
 void findKeyValues(struct partitionVal *threadData){
     for(int i = threadData->left; i <= threadData->right; i++){
@@ -169,11 +171,10 @@ void createIntFile(int howMany){
     fclose(fptr);
     return;
 }
-
 /*
 Loads the integers back into an array in the program.
 Note that we allocate the array in the main function, then
-pass it to this function. That way the function persists
+pass it to this function. That way the array persists
 throughout execution. The dynamically allocated array is
 also tied to the INTME definition above.
 */
@@ -194,7 +195,6 @@ int* readIntFile(int howMany, int arr[]){
     fclose(fptr);
     return arr;
 }
-
 /*
 This is a simple swap utility function,
 it's primarily used for the array shuffle function.
@@ -204,7 +204,6 @@ void swap(int *a, int *b){
     *a = *b;
     *b = temp;
 }
-
 /*
 This shuffles the array after we read it back into
 our array. This was written with reference from geeksforgeeks.com
@@ -216,7 +215,6 @@ void shuffleArray(int arr[]){
         swap(&arr[i], &arr[j]);
     }
 }
-
 /*
 This function places our key values as requested
 by the project brief. Since the continuity of values in the
@@ -237,7 +235,7 @@ void placeKeyValues(int arr[]){
 void *threadShread(void * vargp){
     struct partitionVal *sentData = (struct partitionVal*)vargp;
     findMax(sentData);
-    sentData->threadID = pthread_self();
+    sentData->threadID = globalThreadCount++;
     return NULL;
 }
 
@@ -265,7 +263,7 @@ int main(int argc, const char * argv[]) {
      We're going to populate our array of thread data structs, arrParts, with the following:
      The left and right boundary that the thread should search.
      A point to the array common to all threads. This is OK because each thread only searches
-       within it's designated memory lane. As the Don would say: "Totally cool, totally safe"
+    within it's designated memory lane. As the Don would say: "Totally cool, totally safe"
      */
     pthread_t thread_id[NUMTHREADS];
     for(int i = 0; i < NUMTHREADS; i++){                               //create the partitions and

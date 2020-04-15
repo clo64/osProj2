@@ -1,2 +1,2 @@
 recursThreadsmake: main.c
-	gcc -o recursThreads main.c -std=c99
+	gcc -o recursThreads main.c -w -std=c99
